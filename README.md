@@ -39,10 +39,13 @@ Having said that vscode and windows/macos users, you are on your own I have no i
 ## demonstrations
 note I only showed converting to camel case though you can convert to any of the other described cases.
 <p align="center">
-  <div><img src="images/1_upper_snake.png" alt="Upper snake example" width="400" style="margin-bottom:10px;"></div>
-  <div><img src="images/2_code_action_menu.png" alt="Code action menu" width="400" style="margin-bottom:10px;"></div>
-  <div><img src="images/3_camel_case.png" alt="Camel case example" width="400" style="margin-bottom:10px;"></div>
-  <div><img src="images/4_selected_space_case.png" alt="Selected space case" width="400" style="margin-bottom:10px;"></div>
-  <div><img src="images/5_came_case_code_action.png" alt="Camel case code action" width="400" style="margin-bottom:10px;"></div>
-  <div><img src="images/6_in_camel_case.png" alt="In camel case example" width="400"></div>
+  <div><img src="images/1_upper_snake.png" alt="Upper snake example" width="800" style="margin-bottom:10px;"></div>
+  <div><img src="images/2_code_action_menu.png" alt="Code action menu" width="800" style="margin-bottom:10px;"></div>
+  <div><img src="images/3_camel_case.png" alt="Camel case example" width="800" style="margin-bottom:10px;"></div>
+  <div><img src="images/4_selected_space_case.png" alt="Selected space case" width="800" style="margin-bottom:10px;"></div>
+  <div><img src="images/5_came_case_code_action.png" alt="Camel case code action" width="800" style="margin-bottom:10px;"></div>
+  <div><img src="images/6_in_camel_case.png" alt="In camel case example" width="800"></div>
 </p>
+
+## License
+This project is licensed under [The Unlicense](LICENSE).

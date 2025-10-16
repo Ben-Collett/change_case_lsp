@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:change_case_lsp/constants.dart';
 import 'package:change_case_lsp/message_utils.dart';
 
@@ -170,13 +172,13 @@ void initialize() {
       final content = files[uri]!;
       if (startLine != endLine) {
         //WARNING: using prints like this may break the spec but works in neovim so I don't care
-        print(generateResponse(id, result: []));
+        stdout.write(generateResponse(id, result: []));
         return;
       }
 
       if (startCharacter == endCharacter) {
         if (!isWordChar(content[startLine][startCharacter])) {
-          print(generateResponse(id, result: []));
+          stdout.write(generateResponse(id, result: []));
           return;
         }
         textStartCharacter =
@@ -219,7 +221,7 @@ void initialize() {
           .map((option) => option.toJson())
           .toList();
 
-      print(generateResponse(id, result: optionMap));
+      stdout.write(generateResponse(id, result: optionMap));
     },
   );
 }
@@ -275,8 +277,7 @@ void mainLoop() {
 
 void sendInitializeResponse(Map<String, dynamic> request, dynamic id) async {
   final response = generateResponse(id, result: getInitializeResponse(request));
-  print(response);
-  //stdout.write(response);
+  stdout.write(response);
   //await stdout.flush();
 }
 

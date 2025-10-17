@@ -171,7 +171,6 @@ void initialize() {
 
       final content = files[uri]!;
       if (startLine != endLine) {
-        //WARNING: using prints like this may break the spec but works in neovim so I don't care
         stdout.write(generateResponse(id, result: []));
         return;
       }
@@ -204,18 +203,21 @@ void initialize() {
         CaseType.pascalCase: convertToPascelCase,
         CaseType.upperSnakeCase: convertToUpperSnakeCase,
       };
+      CaseType? currentType = getCaseType(text);
       for (final entry in converter.entries) {
-        options.add(
-          CodeActionOption(
-            startLine: startLine,
-            endLine: endLine,
-            endCharacter: textStartCharacter,
-            startCharacter: textEndCharacter,
-            title: entry.key.label,
-            uri: uri,
-            newText: entry.value(words),
-          ),
-        );
+        if (entry.key != currentType) {
+          options.add(
+            CodeActionOption(
+              startLine: startLine,
+              endLine: endLine,
+              endCharacter: textStartCharacter,
+              startCharacter: textEndCharacter,
+              title: entry.key.label,
+              uri: uri,
+              newText: entry.value(words),
+            ),
+          );
+        }
       }
       List<Map<String, dynamic>> optionMap = options
           .map((option) => option.toJson())
@@ -278,7 +280,6 @@ void mainLoop() {
 void sendInitializeResponse(Map<String, dynamic> request, dynamic id) async {
   final response = generateResponse(id, result: getInitializeResponse(request));
   stdout.write(response);
-  //await stdout.flush();
 }
 
 Map<String, dynamic> getInitializeResponse(Map<String, dynamic> request) {

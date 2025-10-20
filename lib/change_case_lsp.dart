@@ -79,6 +79,13 @@ CaseType? getCaseType(String text) {
 List<String> breakUpString(String text) {
   bool allUppercase = text.toUpperCase() == text;
 
+  if (text.trim().contains(" ")) {
+    return text
+        .toLowerCase()
+        .split(' ')
+        .where((piece) => piece.isNotEmpty)
+        .toList();
+  }
   if (allUppercase) {
     // Split on underscore or whitespace, and lowercase everything
     return text

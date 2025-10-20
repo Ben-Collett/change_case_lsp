@@ -22,6 +22,8 @@ bool isWordChar(String ch) {
       ch == '_';
 }
 
+//the line below is for testing
+// ⚠️ please review
 int nextNonWordCharIndex(int index, String content) {
   for (int i = index + 1; i < content.length; i++) {
     if (!isWordChar(content[i])) {

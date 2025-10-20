@@ -4,7 +4,7 @@ import 'constants.dart';
 
 String encode(Map<String, dynamic> json) {
   final jsonString = jsonEncode(json);
-  return "Content-Length: ${jsonString.length}$separator$jsonString";
+  return "Content-Length: ${utf8.encode(jsonString).length}$separator$jsonString";
 }
 
 String generateResponse(dynamic id, {dynamic result, dynamic error}) {

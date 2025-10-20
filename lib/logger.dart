@@ -7,6 +7,10 @@ void log(dynamic msg) {
   file.writeAsStringSync(msg.toString(), mode: FileMode.append);
 }
 
+void logln(dynamic msg) {
+  log("$msg\n");
+}
+
 void logLine(dynamic msg) {
   log("\n$msg\n");
 }

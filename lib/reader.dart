@@ -35,11 +35,11 @@ extension ReplaceControl on String {
 }
 
 String _readExact(int length, Stdin stdin) {
-  StringBuffer out = StringBuffer();
+  List<int> out = [];
   for (int i = 0; i < length; i++) {
-    out.writeCharCode(stdin.readByteSync());
+    out.add(stdin.readByteSync());
   }
-  return out.toString();
+  return utf8.decode(out);
 }
 
 int _getLength(String header) =>

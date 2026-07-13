@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:change_case_lsp/constants.dart';
+import 'package:change_case_lsp/extensions/string_extensions.dart';
 import 'package:change_case_lsp/message_utils.dart';
 
 import 'reader.dart';
@@ -9,17 +10,10 @@ typedef FilePath = String;
 typedef FileContent = List<String>;
 Map<FilePath, FileContent> files = {};
 final Map<String, SupportedFeature> methods = {};
-bool isUpperCase(String ch) {
-  final code = ch.codeUnitAt(0);
-  return (code >= 65 && code <= 90);
-}
-
 bool isWordChar(String ch) {
-  final code = ch.codeUnitAt(0);
-  return isUpperCase(ch) || // A-Z
-      (code >= 97 && code <= 122) || // a-z
-      (code >= 48 && code <= 57) || // 0-9
-      ch == '_';
+  return ch.isALetter || // a-z
+      ch.isANumberDigit || // 0-9
+      ch.isAUnderscore;
 }
 
 //the line below is for testing
@@ -62,14 +56,14 @@ CaseType? getCaseType(String text) {
     return CaseType.spacedCase;
   }
 
-  if (text.contains("_") && isUpperCase(text[0])) {
+  if (text.contains("_") && text[0].isAUpperCaseLetter) {
     return CaseType.upperSnakeCase;
   }
   if (text.contains("_")) {
     return CaseType.snakeCase;
   }
 
-  if (isUpperCase(text[0])) {
+  if (text[0].isAUpperCaseLetter) {
     return CaseType.pascalCase;
   }
 
@@ -122,22 +116,16 @@ String convertToSpaces(List<String> text) {
 
 String convertToCamelCase(List<String> words) {
   for (int i = 1; i < words.length; i++) {
-    words[i] = words[i].capitalize();
+    words[i] = words[i].capitalizeFistLetter();
   }
   return words.join();
 }
 
 String convertToPascelCase(List<String> words) {
   if (words.isNotEmpty) {
-    words[0] = words.first.capitalize();
+    words[0] = words.first.capitalizeFistLetter();
   }
   return convertToCamelCase(words);
-}
-
-extension Capitalize on String {
-  String capitalize() {
-    return replaceRange(0, 1, this[0].toUpperCase());
-  }
 }
 
 void processTextDocument(Map data) {
@@ -175,8 +163,8 @@ void initialize() {
       int endCharacter = range["end"]["character"];
       String text;
 
-      int textStartCharacter;
-      int textEndCharacter;
+      int textStartCharacterIndex;
+      int textEndCharacterIndex;
 
       final content = files[uri]!;
       if (startLine != endLine) {
@@ -189,18 +177,37 @@ void initialize() {
           stdout.write(generateResponse(id, result: []));
           return;
         }
-        textStartCharacter =
+        textStartCharacterIndex =
             previousNonWordCharIndex(startCharacter, content[startLine]) + 1;
-        if (textStartCharacter == 1 && isWordChar(content[startLine][0])) {
-          textStartCharacter = 0;
+        if (textStartCharacterIndex == 1 && isWordChar(content[startLine][0])) {
+          textStartCharacterIndex = 0;
         }
-        textEndCharacter = nextNonWordCharIndex(endCharacter, content[endLine]);
+        textEndCharacterIndex = nextNonWordCharIndex(
+          endCharacter,
+          content[endLine],
+        );
       } else {
-        textStartCharacter = startCharacter;
-        textEndCharacter = endCharacter;
+        textStartCharacterIndex = startCharacter;
+        textEndCharacterIndex = endCharacter;
       }
 
-      text = content[startLine].substring(textStartCharacter, textEndCharacter);
+      String line = content[startLine];
+      while (textStartCharacterIndex < textEndCharacterIndex &&
+          !line[textStartCharacterIndex].isALetter) {
+        textStartCharacterIndex++;
+      }
+
+      while (textStartCharacterIndex < textEndCharacterIndex &&
+          !line[textEndCharacterIndex].isALetter) {
+        textEndCharacterIndex--;
+      }
+
+      if (textStartCharacterIndex >= textEndCharacterIndex) {
+        stdout.write(generateResponse(id, result: []));
+        return;
+      }
+
+      text = line.substring(textStartCharacterIndex, textEndCharacterIndex + 1);
       List<String> words = breakUpString(text);
 
       List<CodeActionOption> options = [];
@@ -219,8 +226,8 @@ void initialize() {
             CodeActionOption(
               startLine: startLine,
               endLine: endLine,
-              endCharacter: textStartCharacter,
-              startCharacter: textEndCharacter,
+              startCharacter: textStartCharacterIndex,
+              endCharacter: textEndCharacterIndex + 1,
               title: entry.key.label,
               uri: uri,
               newText: entry.value(words),

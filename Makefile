@@ -4,5 +4,5 @@ OUT_NAME = change_case_lsp.exe
 
 .PHONY: compile, always
 compile:
-	rm $(BIN_DIR)/$(OUT_NAME)
+	-rm $(BIN_DIR)/$(OUT_NAME)
 	dart compile exe $(BIN_DIR)/$(BIN_NAME)

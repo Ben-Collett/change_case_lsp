@@ -1,6 +1,14 @@
 # change case lsp
 A proof of concept lsp that provides a code action that allows you to convert the text under your cursor between camel, pascal, and snake case. You can also convert the text to be space separated.  
 
+
+## Demo
+
+![avif demo video](demo_video/demo.avif)
+The animated image demonstrates using change case LSP with neovim to change between all supported casing types.
+
+When converting from spaced case back to cammel the text had to be selected otherwise it would have only tried to change the casing of the word "this" and would have done nothing.
+
 ## Limitations
 
 You can convert to space separated text though there is not much ability to convert from it, unless you highlight the text in visual mode or with your cursor before you trigger the code action. 
@@ -53,16 +61,6 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 })
 ```
 
-## Demonstrations
-Note that I only showed converting to camel case, but you can convert to any of the other described cases.
-<p align="center">
-  <div><img src="images/1_upper_snake.png" alt="Upper snake example" width="800" style="margin-bottom:10px;"></div>
-  <div><img src="images/2_code_action_menu.png" alt="Code action menu" width="800" style="margin-bottom:10px;"></div>
-  <div><img src="images/3_camel_case.png" alt="Camel case example" width="800" style="margin-bottom:10px;"></div>
-  <div><img src="images/4_selected_space_case.png" alt="Selected space case" width="800" style="margin-bottom:10px;"></div>
-  <div><img src="images/5_came_case_code_action.png" alt="Camel case code action" width="800" style="margin-bottom:10px;"></div>
-  <div><img src="images/6_in_camel_case.png" alt="In camel case example" width="800"></div>
-</p>
 
 ## License
 This project is licensed under [The Unlicense](LICENSE).

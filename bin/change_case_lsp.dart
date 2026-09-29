@@ -74,5 +74,5 @@ void onConnect(Socket socket) {
 Future<void> setUpInstance(Writer writer, Reader reader) {
   final lsp = ChangeCaseLsp();
   lsp.initialize(writer);
-  return lsp.mainLoop(reader);
+  return lsp.mainLoop(reader, writer);
 }

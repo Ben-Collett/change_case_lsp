@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:change_case_lsp/constants.dart';
 import 'package:change_case_lsp/extensions/string_extensions.dart';
 import 'package:change_case_lsp/message_utils.dart';
@@ -244,16 +246,37 @@ class ChangeCaseLsp {
     );
   }
 
-  Future<void> mainLoop(Reader reader) async {
+  Future<void> mainLoop(Reader reader, Writer writer) async {
+    bool shutdown = false;
     try {
       while (true) {
         Map<String, dynamic> map = await read(reader);
         String method = map[methodKey];
+        final id = map["id"] ?? fallbackId;
+
+        if (method == "exit") {
+          if (shutdown) {
+            exit(0);
+          }
+          exit(1);
+        }
+
+        if (shutdown) {
+          writer.write(generateInvalidResponseShutdown(id));
+          continue;
+        }
+
+        if (method == "shutdown") {
+          shutdown = true;
+          writer.write(generateShutdownResponse(id));
+          continue;
+        }
+
         if (!methods.containsKey(method)) {
           continue;
         }
 
-        methods[method]?.execute(map["params"], map["id"]);
+        methods[method]?.execute(map["params"], id);
       }
     } catch (e) {
       //suppress broken pipes with tcp
@@ -265,7 +288,7 @@ class ChangeCaseLsp {
     dynamic id,
     Writer writer,
   ) async {
-    final response = generateResponse(
+    final String response = generateResponse(
       id,
       result: getInitializeResponse(request),
     );
